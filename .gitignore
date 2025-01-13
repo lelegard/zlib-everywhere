@@ -1,61 +1,41 @@
-# Temporary files.
 .#*
 *.tmp
 tmp
-
-# Prerequisites
+*.bin
 *.d
-
-# Object files
 *.o
 *.ko
 *.obj
 *.elf
 *.s
 *.S
-
-# Visual Studio temporary files
 ARM64
 x64
 .vs
 *.vcxproj.user
-
-# Linker output
 *.ilk
 *.map
 *.exp
-
-# Precompiled Headers
 *.gch
 *.pch
-
-# Libraries
 *.lib
 *.a
 *.la
 *.lo
-
-# Shared objects (inc. Windows DLLs)
 *.dll
 *.so
 *.so.*
 *.dylib
-
-# Executables
 *.exe
 *.out
 *.app
 *.i*86
 *.x86_64
 *.hex
-
-# Debug files
 *.dSYM/
 *.su
 *.idb
 *.pdb
-
-# Kernel modules
 *.kext
 *.mod*
 *.cmd
@@ -64,8 +44,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-
-# Archive
 *.zip
 *.tar
 *.gz
