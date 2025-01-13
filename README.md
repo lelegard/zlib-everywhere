@@ -1,39 +1,24 @@
-## Using zlib on all operating systems
+# Using zlib on all operating systems
 
-### pkgconfig
-
-Applications using zlib directly:
-~~~
-Requires: zlib
-~~~
-
-Libraries using zlib internally (e.g. libtsduck):
-~~~
-Requires.private: zlib
-~~~
-
-### Linux
+## Linux
 
 List of packages to install when building and running applications using zlib:
 
-| Distro   | Build       | Run
-| -------- | ----------- | ----------
-| Ubuntu   | zlib1g-dev  | zlib1g
-| Debian   |             |
-| Mint     |             |
-| Fedora   | zlib-devel  | zlib
-| Red Hat  | zlib-devel  | zlib
-| openSUSE |             |
-| Arch     |             |
-| Alpine   |             |
-| Gentoo   |             |
+| Distro               | Build       | Run
+| -------------------- | ----------- | ----------
+| Ubuntu, Debian, Mint | zlib1g-dev  | zlib1g
+| Fedora, Red Hat      | zlib-devel  | zlib
+| openSUSE             |             |
+| Arch                 |             |
+| Alpine               |             |
+| Gentoo               |             |
 
 Build options:
 ~~~
 LDLIBS += -lz
 ~~~
 
-### macOS
+## macOS
 
 A version of zlib is installed with macOS and another one comes with HomeBrew.
 Let's assume we use the native zlib coming with macOS.
@@ -48,7 +33,7 @@ In HomeBrew formulae:
 uses_from_macos "zlib"
 ~~~
 
-### BSD
+## BSD
 
 List of packages to install to build and run applications using zlib:
 
@@ -59,7 +44,19 @@ List of packages to install to build and run applications using zlib:
 | NetBSD       |             |
 | DragonFlyBSD |             |
 
-### Windows
+## pkgconfig
+
+Applications using zlib directly:
+~~~
+Requires: zlib
+~~~
+
+Libraries using zlib internally (e.g. libtsduck):
+~~~
+Requires.private: zlib
+~~~
+
+## Windows
 
 The standard Windows DLL `PresentationNative_v0300.dll` embeds a version of zlib with the following exported symbols:
 - `ums_deflate_init`
@@ -76,7 +73,7 @@ There is one single file for deflate and one for inflate.
 The license is dual: MIT and Public Domain.
 The code can be used without restriction.
 
-### References
+## References
 
 - Zlib home page: https://zlib.net/
 - Header-only implementations:
