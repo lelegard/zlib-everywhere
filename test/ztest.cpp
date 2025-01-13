@@ -8,7 +8,10 @@
 #endif
 
 #if defined(USE_ZLIB)
-#include <zlib.h>
+    #if !defined(ZLIB_CONST)
+        #define ZLIB_CONST 1
+    #endif
+    #include <zlib.h>
 #endif
 
 using ByteBlock = std::vector<uint8_t>;
@@ -312,17 +315,17 @@ const std::vector<Reference> references {
 // Utilities.
 //----------------------------------------------------------------------------
 
-char hexa(int x)
+static char hexa(int x)
 {
     x = std::max(0, std::min(15, x));
-    return x < 10 ? '0' + x : 'A' - 10 + x;
+    return char(x < 10 ? '0' + x : 'A' - 10 + x);
 }
 
-void dump(const char* margin, const uint8_t* data, size_t data_size, size_t line_size)
+static void dump(const char* margin, const uint8_t* data, size_t data_size, size_t line_size)
 {
     const uint8_t* const end = data + data_size;
     while (data < end) {
-        size_t len = std::min<size_t>(line_size, end - data);
+        size_t len = std::min(line_size, size_t(end - data));
         std::cout << margin;
         const char* space = "";
         while (len-- > 0) {
@@ -340,7 +343,7 @@ void dump(const char* margin, const uint8_t* data, size_t data_size, size_t line
 
 #if defined(USE_ZLIB)
 
-void checkZlib(const ::z_stream& strm, int status, const char* func = nullptr)
+static void checkZlib(const ::z_stream& strm, int status, const char* func = nullptr)
 {
     if (status != Z_OK && status != Z_STREAM_END && status != Z_BUF_ERROR) {
         std::cerr << "*** zlib error " << status;
@@ -363,7 +366,7 @@ void checkZlib(const ::z_stream& strm, int status, const char* func = nullptr)
 
 #if defined(USE_ZLIB)
 
-void compress_with_zlib(ByteBlock& out, const void* in, size_t in_size, int level)
+static void compress_with_zlib(ByteBlock& out, const void* in, size_t in_size, int level)
 {
     out.resize(256 + in_size);
 
@@ -372,10 +375,10 @@ void compress_with_zlib(ByteBlock& out, const void* in, size_t in_size, int leve
     int status = ::deflateInit(&strm, level);
     checkZlib(strm, status, "deflateInit");
 
-    strm.next_in = (decltype(strm.next_in))(in);
-    strm.avail_in = (decltype(strm.avail_in))(in_size);
-    strm.next_out = (decltype(strm.next_out))(out.data());
-    strm.avail_out = (decltype(strm.avail_out))(out.size());
+    strm.next_in = reinterpret_cast<decltype(strm.next_in)>(in);
+    strm.avail_in = static_cast<decltype(strm.avail_in)>(in_size);
+    strm.next_out = reinterpret_cast<decltype(strm.next_out)>(out.data());
+    strm.avail_out = static_cast<decltype(strm.avail_out)>(out.size());
 
     do {
         status = ::deflate(&strm, Z_FINISH);
@@ -383,8 +386,8 @@ void compress_with_zlib(ByteBlock& out, const void* in, size_t in_size, int leve
         if (status != Z_STREAM_END && strm.avail_out == 0) {
             size_t previous = strm.total_out;
             out.resize(previous + 100'000);
-            strm.next_out = (decltype(strm.next_out))(out.data() + previous);
-            strm.avail_out = static_cast<uInt>(out.size() - previous);
+            strm.next_out = reinterpret_cast<decltype(strm.next_out)>(out.data() + previous);
+            strm.avail_out = static_cast<decltype(strm.avail_out)>(out.size() - previous);
         }
     } while (status != Z_STREAM_END);
     out.resize(strm.total_out);
@@ -401,19 +404,19 @@ void compress_with_zlib(ByteBlock& out, const void* in, size_t in_size, int leve
 
 #if defined(USE_ZLIB)
 
-void decompress_with_zlib(ByteBlock& out, const void* in, size_t in_size)
+static void decompress_with_zlib(ByteBlock& out, const void* in, size_t in_size)
 {
     out.resize(in_size);
 
     ::z_stream strm;
     ::memset(&strm, 0, sizeof(strm));
-    strm.next_in = (decltype(strm.next_in))(in);
-    strm.avail_in = (decltype(strm.avail_in))(in_size);
+    strm.next_in = reinterpret_cast<decltype(strm.next_in)>(in);
+    strm.avail_in = static_cast<decltype(strm.avail_in)>(in_size);
     int status = ::inflateInit(&strm);
     checkZlib(strm, status, "inflateInit");
 
-    strm.next_out = (decltype(strm.next_out))(out.data());
-    strm.avail_out = (decltype(strm.avail_out))(out.size());
+    strm.next_out = reinterpret_cast<decltype(strm.next_out)>(out.data());
+    strm.avail_out = static_cast<decltype(strm.avail_out)>(out.size());
 
     do {
         status = ::inflate(&strm, Z_FINISH);
@@ -421,8 +424,8 @@ void decompress_with_zlib(ByteBlock& out, const void* in, size_t in_size)
         if (status != Z_STREAM_END && strm.avail_out == 0) {
             size_t previous = strm.total_out;
             out.resize(previous + 100'000);
-            strm.next_out = (decltype(strm.next_out))(out.data() + previous);
-            strm.avail_out = static_cast<uInt>(out.size() - previous);
+            strm.next_out = reinterpret_cast<decltype(strm.next_out)>(out.data() + previous);
+            strm.avail_out = static_cast<decltype(strm.avail_out)>(out.size() - previous);
         }
     } while (status != Z_STREAM_END);
     out.resize(strm.total_out);
@@ -437,7 +440,7 @@ void decompress_with_zlib(ByteBlock& out, const void* in, size_t in_size)
 // Small Deflate compress
 //----------------------------------------------------------------------------
 
-void compress_with_sdefl(ByteBlock& out, const void* in, size_t in_size, int level)
+static void compress_with_sdefl(ByteBlock& out, const void* in, size_t in_size, int level)
 {
     out.resize(size_t(::sdefl_bound(int(in_size))));
     ::sdefl data;
@@ -456,7 +459,7 @@ void compress_with_sdefl(ByteBlock& out, const void* in, size_t in_size, int lev
 // Small Deflate decompress
 //----------------------------------------------------------------------------
 
-void decompress_with_sdefl(ByteBlock& out, const void* in, size_t in_size)
+static void decompress_with_sdefl(ByteBlock& out, const void* in, size_t in_size)
 {
     out.resize(512 + in_size * 2);
     const int len = ::zsinflate(out.data(), int(out.size()), in, int(in_size));
@@ -490,7 +493,7 @@ const std::vector<Library> libraries {
 // Decompress and verify.
 //----------------------------------------------------------------------------
 
-void decompress_verify(const ByteBlock& compressed, Decompress decomp)
+static void decompress_verify(const ByteBlock& compressed, Decompress decomp)
 {
     ByteBlock out;
     decomp(out, compressed.data(), compressed.size());
@@ -511,7 +514,7 @@ void decompress_verify(const ByteBlock& compressed, Decompress decomp)
 // Output reference compressed data.
 //----------------------------------------------------------------------------
 
-void generate_reference(const char* in, size_t in_size, int level)
+static void generate_reference(const char* in, size_t in_size, int level)
 {
     ByteBlock out;
     compress_with_zlib(out, in, in_size, level);
