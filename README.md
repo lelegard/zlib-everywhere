@@ -4,14 +4,13 @@
 
 List of packages to install when building and running applications using zlib:
 
-| Distro               | Build       | Run
-| -------------------- | ----------- | ----------
-| Ubuntu, Debian, Mint | zlib1g-dev  | zlib1g
-| Fedora, Red Hat      | zlib-devel  | zlib
-| openSUSE             |             |
-| Arch                 |             |
-| Alpine               |             |
-| Gentoo               |             |
+| Distro                    | Build         | Run
+| ------------------------- | ------------- | ----------
+| Ubuntu, Debian, Mint      | zlib1g-dev    | zlib1g
+| Fedora, Red Hat, openSUSE | zlib-devel    | zlib
+| Arch                      | zlib          | zlib
+| Alpine                    | zlib-dev      | zlib
+| Gentoo                    | sys-libs/zlib | sys-libs/zlib
 
 Build options:
 ~~~
@@ -37,12 +36,10 @@ uses_from_macos "zlib"
 
 List of packages to install to build and run applications using zlib:
 
-| Distro       | Build       | Run
-| ------------ | ----------- | ----------
-| FreeBSD      |             |
-| OpenBSD      |             |
-| NetBSD       |             |
-| DragonFlyBSD |             |
+| Distro                | Build        | Run
+| --------------------- | ------------ | ----------
+| FreeBSD, DragonFlyBSD | (in base OS) | (in base OS)
+| OpenBSD, NetBSD       | zlib         | zlib
 
 ## pkgconfig
 
@@ -78,6 +75,3 @@ The code can be used without restriction.
 - Zlib home page: https://zlib.net/
 - Header-only implementations:
   - https://github.com/vurtun/lib
-- Header-only wrapper projects:
-  - https://github.com/mateidavid/zstr
-  - https://github.com/tmaklin/bxzstr
