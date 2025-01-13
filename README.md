@@ -21,8 +21,8 @@ List of packages to install when building and running applications using zlib:
 | Ubuntu   | zlib1g-dev  | zlib1g
 | Debian   |             |
 | Mint     |             |
-| Fedora   |             |
-| Red Hat  |             |
+| Fedora   | zlib-devel  | zlib
+| Red Hat  | zlib-devel  | zlib
 | openSUSE |             |
 | Arch     |             |
 | Alpine   |             |
