@@ -1,6 +1,7 @@
 .#*
 *.tmp
 tmp
+bin
 *.bin
 *.d
 *.o

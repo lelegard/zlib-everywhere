@@ -522,7 +522,11 @@ static void decompress_verify(const ByteBlock& compressed, Decompress decomp)
 static void generate_reference(const char* in, size_t in_size, int level)
 {
     ByteBlock out;
+#if defined(USE_ZLIB)
     compress_with_zlib(out, in, in_size, level);
+#else
+    compress_with_sdefl(out, in, in_size, level);
+#endif
     std::cout << "// Level " << level << ", input size: " << in_size << ", output size: " << out.size() << std::endl;
     std::cout << "const ByteBlock reference_" << level << " {" << std::endl;
     dump("    ", out.data(), out.size(), 16);
