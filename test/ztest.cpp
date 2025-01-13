@@ -42,9 +42,14 @@ using Decompress = void (*)(ByteBlock& out, const void* in, size_t in_size);
     #pragma GCC diagnostic ignored "-Wswitch-default"
     #pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
     #pragma GCC diagnostic ignored "-Wunused-function"
+    #pragma GCC diagnostic ignored "-Wsign-compare"
 #elif defined(_MSC_VER)
     #pragma warning(push)
     // #pragma warning(disable:num)
+#endif
+
+#if (defined(__ARM_32BIT_STATE) || (defined(__ARM_ARCH) && __ARM_ARCH < 8)) && !defined(SINFL_NO_SIMD)
+    #define SINFL_NO_SIMD 1
 #endif
 
 #define SINFL_IMPLEMENTATION
