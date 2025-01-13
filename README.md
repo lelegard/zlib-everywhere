@@ -1,4 +1,4 @@
-## Using zling on all operating systems
+## Using zlib on all operating systems
 
 ### pkgconfig
 
@@ -14,11 +14,11 @@ Requires.private: zlib
 
 ### Linux
 
-List of packages to install to build and run applications using zlib:
+List of packages to install when building and running applications using zlib:
 
 | Distro   | Build       | Run
 | -------- | ----------- | ----------
-| Ubuntu   | zlib1g      | zlib1g-dev
+| Ubuntu   | zlib1g-dev  | zlib1g
 | Debian   |             |
 | Mint     |             |
 | Fedora   |             |
@@ -67,8 +67,8 @@ The standard Windows DLL `PresentationNative_v0300.dll` embeds a version of zlib
 - `ums_inflate_init`
 - `ums_inflate`
 
-However, there is no documentation, examples are scarce are vague, there is not `deflate_end` or `inflate_end`
-and the status of memory allocation is vague.
+However, there is no documentation, examples are scarce and vague, there is not `deflate_end` or `inflate_end`
+and the status of memory allocation in the middle of an operation is unclear.
 
 Alteratively, we may use the header-only implementation from https://github.com/vurtun/lib
 
